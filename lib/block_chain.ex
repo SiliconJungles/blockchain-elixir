@@ -12,18 +12,18 @@ defmodule BlockChain do
   end
 
   def valid?(chain) do
-    for {_el, counter} <- chain |> Enum.with_index(1) do
+    chain
+    |> Enum.with_index(1)
+    |> Enum.all?(fn {_el, counter} ->
       current_block = chain |> Enum.at(counter)
       previous_block = chain |> Enum.at(counter - 1)
 
       if current_block do
-        if current_block.previousHash != previous_block.hash do
-          false
-        end
+        current_block.previousHash == previous_block.hash
+      else
+        true
       end
-    end
-
-    true
+    end)
   end
 
   defp create_genesis_block do

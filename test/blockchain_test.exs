@@ -46,11 +46,26 @@ defmodule BlockChainTest do
       |> BlockChain.add_block(
         Block.new(index, (blockchain |> BlockChain.latest_block()).hash, timestamp, data)
       )
+
+    chain =
+      chain
       |> BlockChain.add_block(
-        Block.new(index1, (blockchain |> BlockChain.latest_block()).hash, timestamp1, data1)
+        Block.new(index1, (chain |> BlockChain.latest_block()).hash, timestamp1, data1)
       )
 
     assert chain |> BlockChain.valid?() == true
     assert chain |> length == 3
+  end
+
+  test "the chain is not valid", %{blockchain: blockchain} do
+    index1 = 3
+    timestamp1 = DateTime.utc_now() |> to_string
+    data1 = %{amount: 40} |> Poison.encode!()
+
+    chain =
+      blockchain
+      |> BlockChain.add_block(Block.new(index1, "230428049203942034", timestamp1, data1))
+
+    assert chain |> BlockChain.valid?() == false
   end
 end
