@@ -1,9 +1,8 @@
 defmodule Block do
-  def new(index, previousHash \\ "", timestamp, data) do
-    {hash, nonce} = mine_block(index, previousHash, timestamp, data, 0)
+  def new(previousHash \\ "", timestamp, transaction) do
+    {hash, nonce} = mine_block(previousHash, timestamp, transaction, 0)
 
     %{
-      index: index,
       previousHash: previousHash,
       timestamp: timestamp,
       hash: hash,
@@ -11,13 +10,13 @@ defmodule Block do
     }
   end
 
-  def generate_hash(index, previousHash, timestamp, data, nonce) do
-    :crypto.hash(:sha256, "#{index}#{previousHash}#{timestamp}#{data}#{nonce}")
+  def generate_hash(previousHash, timestamp, transaction, nonce) do
+    :crypto.hash(:sha256, "#{previousHash}#{timestamp}#{transaction}#{nonce}")
     |> Base.encode16()
   end
 
-  def mine_block(index, previousHash, timestamp, data, nonce) do
-    hash = generate_hash(index, previousHash, timestamp, data, nonce)
+  def mine_block(previousHash, timestamp, transaction, nonce) do
+    hash = generate_hash(previousHash, timestamp, transaction, nonce)
 
     case hash
          |> String.starts_with?(Ebc.difficulty()) do
@@ -25,7 +24,7 @@ defmodule Block do
         {hash, nonce}
 
       false ->
-        mine_block(index, previousHash, timestamp, data, nonce + 1)
+        mine_block(previousHash, timestamp, transaction, nonce + 1)
     end
   end
 end

@@ -27,6 +27,6 @@ defmodule BlockChain do
   end
 
   defp create_genesis_block do
-    Block.new(1, "000000000000000000000000", "2018-07-19 05:39:53.504271Z", "Genesis Block")
+    Block.new("000000000000000000000000", "2018-07-19 05:39:53.504271Z", "Genesis Block")
   end
 end

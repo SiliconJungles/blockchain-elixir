@@ -6,46 +6,42 @@ defmodule BlockChainTest do
   end
 
   test "get latest block", %{blockchain: blockchain} do
-    index = 1
     timestamp = "2018-07-19 05:39:53.504271Z"
     first_hash = "000000000000000000000000"
-    data = "Genesis Block"
+    transaction = "Genesis Block"
 
     assert blockchain |> BlockChain.latest_block() ==
-             Block.new(index, first_hash, timestamp, data)
+             Block.new(first_hash, timestamp, transaction)
   end
 
   test "add new block to the chain", %{blockchain: blockchain} do
-    index = 2
     timestamp = DateTime.utc_now() |> to_string
-    data = %{amount: 10} |> Poison.encode!()
+    transaction = %{amount: 10} |> Poison.encode!()
 
     latest_block = blockchain |> BlockChain.latest_block()
 
     assert blockchain
-           |> BlockChain.add_block(Block.new(index, latest_block.hash, timestamp, data))
+           |> BlockChain.add_block(Block.new(latest_block.hash, timestamp, transaction))
            |> length == 2
   end
 
   test "the chain is valid", %{blockchain: blockchain} do
-    index = 2
     timestamp = DateTime.utc_now() |> to_string
-    data = %{amount: 10} |> Poison.encode!()
+    transaction = %{amount: 10} |> Poison.encode!()
 
-    index1 = 3
     timestamp1 = DateTime.utc_now() |> to_string
-    data1 = %{amount: 40} |> Poison.encode!()
+    transaction1 = %{amount: 40} |> Poison.encode!()
 
     chain =
       blockchain
       |> BlockChain.add_block(
-        Block.new(index, (blockchain |> BlockChain.latest_block()).hash, timestamp, data)
+        Block.new((blockchain |> BlockChain.latest_block()).hash, timestamp, transaction)
       )
 
     chain =
       chain
       |> BlockChain.add_block(
-        Block.new(index1, (chain |> BlockChain.latest_block()).hash, timestamp1, data1)
+        Block.new((chain |> BlockChain.latest_block()).hash, timestamp1, transaction1)
       )
 
     IO.inspect(chain, label: "Chain")
@@ -55,13 +51,12 @@ defmodule BlockChainTest do
   end
 
   test "the chain is not valid", %{blockchain: blockchain} do
-    index1 = 3
     timestamp1 = DateTime.utc_now() |> to_string
-    data1 = %{amount: 40} |> Poison.encode!()
+    transaction1 = %{amount: 40} |> Poison.encode!()
 
     chain =
       blockchain
-      |> BlockChain.add_block(Block.new(index1, "230428049203942034", timestamp1, data1))
+      |> BlockChain.add_block(Block.new("230428049203942034", timestamp1, transaction1))
 
     assert chain |> BlockChain.valid?() == false
   end
