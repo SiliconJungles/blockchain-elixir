@@ -3,7 +3,7 @@ defmodule Ebc do
   Documentation for Ebc.
   """
 
-  def hello do
-    :world
+  def difficulty do
+    "00"
   end
 end

@@ -22,11 +22,6 @@ defmodule BlockChainTest do
 
     latest_block = blockchain |> BlockChain.latest_block()
 
-    # IO.inspect(
-    #   blockchain
-    #   |> BlockChain.add_block(Block.new(index, latest_block.hash, timestamp, data))
-    # )
-
     assert blockchain
            |> BlockChain.add_block(Block.new(index, latest_block.hash, timestamp, data))
            |> length == 2
@@ -52,6 +47,8 @@ defmodule BlockChainTest do
       |> BlockChain.add_block(
         Block.new(index1, (chain |> BlockChain.latest_block()).hash, timestamp1, data1)
       )
+
+    IO.inspect(chain, label: "Chain")
 
     assert chain |> BlockChain.valid?() == true
     assert chain |> length == 3

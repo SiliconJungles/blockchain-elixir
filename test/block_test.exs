@@ -8,8 +8,6 @@ defmodule BlockTest do
     previousHash = "000000000000000000000000"
     block = Block.new(index, previousHash, timestamp, data)
 
-    assert block.hash ==
-             :crypto.hash(:sha256, "#{index}#{previousHash}#{timestamp}#{data}")
-             |> Base.encode16()
+    assert block.hash |> String.starts_with?(Ebc.difficulty()) == true
   end
 end

@@ -1,7 +1,7 @@
 defmodule EbcTest do
   use ExUnit.Case
 
-  test "greets the world" do
-    assert Ebc.hello() == :world
+  test "difficulty" do
+    assert Ebc.difficulty() == "00"
   end
 end
